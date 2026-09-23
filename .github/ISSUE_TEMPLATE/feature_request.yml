@@ -1,0 +1,54 @@
+name: Feature request
+description: Suggest a capability for the desktop shell or one of its plugins.
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe the problem before the solution — it is often cheaper to solve it a
+        different way than the one either of us first pictured.
+
+        Worth knowing what is out of scope here: anything belonging to the agent runtime or the web
+        frontend (that is
+        [upstream](https://github.com/deepseek-ai/deepseek-harness)), code signing and notarization,
+        and Windows/Linux packaging.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you hitting?
+      description: The friction or limitation, not the feature yet.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+      description: Including workarounds you are using today.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part?
+      options:
+        - "Desktop shell (window, IPC bridge, dsh:// protocol)"
+        - "brand plugin"
+        - "usage-panel plugin"
+        - "pinned plugin"
+        - "A bundle patch (brand / process-fold)"
+        - "Packaging and build scripts"
+        - "Docs"
+        - "Not sure"
+    validations:
+      required: true

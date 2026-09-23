@@ -20,6 +20,19 @@ instead of an HTTP server — and adds a small set of self-authored customizatio
 | `pinned` | pin/hold marks on conversation content, stored per session |
 | `process-fold` | a finished turn's process rows fold into a drawer |
 
+<p align="center">
+  <img src="docs/images/main-light.png" width="860" alt="HeRoes NEVERDIE main window, light theme">
+</p>
+
+<details>
+<summary>More screenshots</summary>
+
+| Dark theme | First-run notice |
+|:---:|:---:|
+| <img src="docs/images/main-dark.png" width="400" alt="HeRoes NEVERDIE main window, dark theme"> | <img src="docs/images/welcome.png" width="400" alt="First-run notice"> |
+
+</details>
+
 Sessions, settings and credentials are shared with `dsh web` and the CLI through `~/.dsh`, so all
 data — conversation history, settings, keys, attachments — stays on your own machine. There is no
 server component.
@@ -27,12 +40,15 @@ server component.
 ```sh
 git clone https://github.com/bergert131965/heroes-neverdie.git
 cd heroes-neverdie
-npm ci && npm run rebuild && npm start
+npm ci && npm run patch && npm start
 ```
 
 Requires **macOS** and **Node.js ≥ 22**. `npm ci` overwrites `node_modules`, which is where both
-patches live, so run `npm run patch` afterwards; `npm run verify` only checks that they are in
-place and fails if they are not.
+patches live, so `npm run patch` is not optional. `npm run verify` only checks that they are in
+place, and fails if they are not.
+
+If terminal or command execution misbehaves after install, run `npm run rebuild` and read the real
+error — the `postinstall` hook swallows a failed `node-pty` rebuild.
 
 ---
 
@@ -155,7 +171,7 @@ npm run check:process-fold  # 只校验过程行补丁 + 渲染自测
 
 | 本项目 | 依赖的上游 | 状态 |
 |---|---|---|
-| `0.1.0` | `@deepseek-ai/dsh@0.1.5-rc.2` | 当前锁定版本，唯一验证过的组合 |
+| `1.0.1` | `@deepseek-ai/dsh@0.1.5-rc.2` | 当前锁定版本，唯一验证过的组合 |
 
 上游目前仍处于 **developer preview**，npm 上 `latest` 本身就是 rc 版本，且前端插件协议**没有版本化承诺**。升级 `@deepseek-ai/dsh` 前请预期：`scripts/vendor/` 里的基线需要重新生成、`patch-process-fold.mjs` 可能失效、`cordis.patch.yml` 里引用的行 id 可能改名。请一次只升一个版本并跑完 `npm run selftest` 与 `npm run check:process-fold`。
 
@@ -186,6 +202,11 @@ npm run check:process-fold  # 只校验过程行补丁 + 渲染自测
 - 本仓库（桌面外壳与自有插件）以 [MIT](LICENSE) 发布。
 - 上游 `@deepseek-ai/dsh` 同样是 MIT，其版权与许可声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 - 本项目与 DeepSeek 无隶属关系。请在二次分发时同样明确这一点。
+
+## 参与贡献
+
+改动前请读 [CONTRIBUTING.md](CONTRIBUTING.md) —— 尤其是"**不要手改 `node_modules`**"那一节：
+两个补丁本身就是记录在案的唯一真相。版本历史见 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 安全
 

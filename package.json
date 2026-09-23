@@ -1,7 +1,7 @@
 {
   "name": "heroes-neverdie-desktop",
   "productName": "HeRoes NEVERDIE",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "private": true,
   "description": "HeRoes NEVERDIE — an unofficial Electron desktop surface for DeepSeek Harness (DSH): desktop profile + file:// frontend + IPC bridge, aligned with `dsh web`. Not affiliated with or endorsed by DeepSeek.",
   "type": "module",

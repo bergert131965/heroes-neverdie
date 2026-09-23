@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/bergert131965/heroes-neverdie/security/advisories/new
+    about: Please report privately. Do not open a public issue for security problems.
+  - name: Upstream DeepSeek Harness
+    url: https://github.com/deepseek-ai/deepseek-harness/issues
+    about: Bugs in the agent runtime, the session store, or the web frontend belong here instead.
