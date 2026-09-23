@@ -50,6 +50,9 @@ place, and fails if they are not.
 If terminal or command execution misbehaves after install, run `npm run rebuild` and read the real
 error — the `postinstall` hook swallows a failed `node-pty` rebuild.
 
+Planned work — and, just as usefully, what is explicitly **out of scope** — is in
+[docs/roadmap.md](docs/roadmap.md).
+
 ---
 
 <details>
@@ -58,6 +61,20 @@ error — the `postinstall` hook swallows a failed `node-pty` rebuild.
 按照官方预留的桌面端架构实现：**desktop profile + `file://` 加载 + IPC 桥**，功能对齐网页版（`dsh web`）。
 
 ---
+
+## 相对上游的主要改动
+
+一句话：**上游提供 agent 与前端，本仓库提供"把它装进一个 macOS 原生窗口"这一层，外加四处自有改动。**
+
+| # | 改动 | 位置 | 说明 |
+|---|---|---|---|
+| 1 | **桌面载体** | `main.js`、`preload.js`、`profile/plugins/desktop-*.js` | 用官方预留的 `desktop` profile + `file://` 前端 + IPC 桥替代 HTTP 服务器，**不监听任何端口** |
+| 2 | **三个客户端插件** | `profile/plugins/{brand,usage-panel,pinned}/` | 品牌槽位接管（含首页 hero）、用量与余额账本、会话置顶 |
+| 3 | **两个上游 bundle 补丁** | `scripts/patch-*.mjs` | 过程行折叠、品牌文案与窗口标题——上游写死、槽位机制覆盖不到的部分 |
+| 4 | **macOS 打包** | `scripts/package-macos.mjs` | 含一个"全程零删除"的手写打包器，适配拒绝 unlink/rename 的宿主 |
+| 5 | **品牌与合规改造** | `docs/brand.md` | 按上游 BRAND_GUIDELINES 完成改名，并明确哪些属于描述性引用、应当保留 |
+
+> 功能对照与截图见上方 **What is this?**；后续计划见 [docs/roadmap.md](docs/roadmap.md)；各文件的用途见下方目录结构。
 
 ## 架构
 
@@ -206,7 +223,8 @@ npm run check:process-fold  # 只校验过程行补丁 + 渲染自测
 ## 参与贡献
 
 改动前请读 [CONTRIBUTING.md](CONTRIBUTING.md) —— 尤其是"**不要手改 `node_modules`**"那一节：
-两个补丁本身就是记录在案的唯一真相。版本历史见 [CHANGELOG.md](CHANGELOG.md)。
+两个补丁本身就是记录在案的唯一真相。版本历史见 [CHANGELOG.md](CHANGELOG.md)，
+想认领某块工作见 [docs/roadmap.md](docs/roadmap.md)（每一项都写了卡在哪）。
 
 ## 安全
 
