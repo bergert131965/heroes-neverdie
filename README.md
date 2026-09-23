@@ -30,8 +30,9 @@ cd heroes-neverdie
 npm ci && npm run rebuild && npm start
 ```
 
-Requires **macOS** and **Node.js ≥ 22**. `npm ci` overwrites `node_modules`, so re-run
-`npm run patch:brand` afterwards; `npm run verify` checks that the patches are in place.
+Requires **macOS** and **Node.js ≥ 22**. `npm ci` overwrites `node_modules`, which is where both
+patches live, so run `npm run patch` afterwards; `npm run verify` only checks that they are in
+place and fails if they are not.
 
 ---
 
@@ -134,13 +135,15 @@ npm run package  # 手写打包（scripts/package-macos.mjs）：.app + .zip，�
 ### 自测
 
 ```sh
-npm run verify              # 一次跑完：品牌补丁校验 + 过程行补丁校验 + 无头启动自检
-npm run selftest            # 无头自检：引导客户端插件 + 桥探测 + 截屏后退出
-npm run check:brand         # 品牌补丁幂等校验
-npm run check:process-fold  # 过程行补丁的幂等校验 + 渲染自测
+npm run patch               # 应用两个补丁（npm ci 之后必须跑一次）
+npm run verify              # 幂等校验：品牌补丁 + 过程行补丁（含 30 项行为断言）
+npm run selftest            # 无头启动自检：引导客户端插件 + 桥探测 + 截屏后退出
+npm run check:brand         # 只校验品牌补丁
+npm run check:process-fold  # 只校验过程行补丁 + 渲染自测
 ```
 
-> `npm ci` 会覆盖 `node_modules`，补丁随之丢失。装完依赖后先跑 `npm run patch:brand`；过程行补丁由 `check:process-fold` 按需重建。
+> `npm ci` 会覆盖 `node_modules`，而**两个补丁都住在那里**，所以装完依赖后必须跑一次 `npm run patch`。
+> `npm run verify` **只做校验、不会打补丁**，补丁不在位时它会以非零退出——这正是 CI 用来卡住回归的手段。
 >
 > `npm run selftest` 会真的启动宿主并占用 `DSH_HOME`。若桌面版 App 或 `dsh web` 正在运行（它们共享 `~/.dsh`），自检可能卡在事件流握手——换个隔离的 `DSH_HOME` 即可，顺带会得到一张不含真实会话的干净截图：
 >

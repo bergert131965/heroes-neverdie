@@ -77,7 +77,7 @@ const BRAND = {
 `npm install` / `npm ci` 会覆盖 `node_modules`，**补丁随之丢失**。以下时机都要重跑：
 
 ```sh
-npm ci && npm run patch:brand && npm run check:process-fold
+npm ci && npm run patch && npm run verify
 ```
 
 或者一次性全验：
