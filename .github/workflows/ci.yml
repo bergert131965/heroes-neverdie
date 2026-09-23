@@ -1,0 +1,61 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# This project is macOS-only (node-pty is a native module rebuilt against the
+# Electron ABI, and the packaging config only targets mac), so every job runs on
+# a macOS runner.
+#
+# `npm ci` overwrites node_modules, which is where both bundle patches live.
+# Every job therefore re-applies them before checking anything.
+
+jobs:
+  verify:
+    name: patches + unit tests
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply the brand patch
+        run: npm run patch:brand
+
+      - name: Verify both patches are in place
+        run: npm run verify
+
+  selftest:
+    name: headless boot self-test
+    runs-on: macos-latest
+    needs: verify
+    # Electron on a CI runner has no interactive session and can be flaky.
+    # This job is informative, not a gate.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply the brand patch
+        run: npm run patch:brand
+
+      - name: Boot the shell with an isolated DSH_HOME
+        # A fresh DSH_HOME keeps the run independent of anything on the runner
+        # and avoids contending for ~/.dsh with any other host.
+        run: DSH_HOME="$(mktemp -d)" npm run selftest

@@ -18,6 +18,7 @@
     "dist": "electron-builder --mac",
     "predist": "npm run patch:brand && node scripts/patch-process-fold.mjs",
     "dist:dir": "electron-builder --mac --dir",
+    "predist:dir": "npm run patch:brand && node scripts/patch-process-fold.mjs",
     "postinstall:electron": "node node_modules/electron/install.js",
     "selftest": "env -u ELECTRON_RUN_AS_NODE DSH_DESKTOP_SELFTEST=1 DSH_DESKTOP_DISABLE_SANDBOX=1 electron .",
     "selftest:process-fold": "ELECTRON_RUN_AS_NODE=1 node_modules/electron/dist/Electron.app/Contents/MacOS/Electron scripts/chat-process-fold-selftest.mjs",

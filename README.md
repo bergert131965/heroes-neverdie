@@ -4,6 +4,40 @@
 >
 > **Unofficial.** This is a community-built Electron desktop surface for DeepSeek Harness (DSH). It is not affiliated with, sponsored by, or endorsed by DeepSeek.
 
+---
+
+## What is this?
+
+**HeRoes NEVERDIE** is an unofficial Electron desktop shell for
+[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH). It takes the architecture
+upstream reserved for Electron — the `desktop` profile, a `file://` frontend, and an IPC bridge
+instead of an HTTP server — and adds a small set of self-authored customizations:
+
+| | |
+|---|---|
+| `brand` | HeRoes mark and wordmark in the sidebar, plus the home-screen hero mark |
+| `usage-panel` | account balance beside a locally recomputed token ledger |
+| `pinned` | pin/hold marks on conversation content, stored per session |
+| `process-fold` | a finished turn's process rows fold into a drawer |
+
+Sessions, settings and credentials are shared with `dsh web` and the CLI through `~/.dsh`, so all
+data — conversation history, settings, keys, attachments — stays on your own machine. There is no
+server component.
+
+```sh
+git clone https://github.com/bergert131965/heroes-neverdie.git
+cd heroes-neverdie
+npm ci && npm run rebuild && npm start
+```
+
+Requires **macOS** and **Node.js ≥ 22**. `npm ci` overwrites `node_modules`, so re-run
+`npm run patch:brand` afterwards; `npm run verify` checks that the patches are in place.
+
+---
+
+<details>
+<summary><b>以下为中文文档</b></summary>
+
 按照官方预留的桌面端架构实现：**desktop profile + `file://` 加载 + IPC 桥**，功能对齐网页版（`dsh web`）。
 
 ---
@@ -149,3 +183,9 @@ npm run check:process-fold  # 过程行补丁的幂等校验 + 渲染自测
 - 本仓库（桌面外壳与自有插件）以 [MIT](LICENSE) 发布。
 - 上游 `@deepseek-ai/dsh` 同样是 MIT，其版权与许可声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 - 本项目与 DeepSeek 无隶属关系。请在二次分发时同样明确这一点。
+
+## 安全
+
+发现安全问题请**不要开公开 Issue**，按 [SECURITY.md](SECURITY.md) 的方式私下报告。
+
+</details>
