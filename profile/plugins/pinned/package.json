@@ -1,0 +1,26 @@
+{
+  "name": "dsh-desktop-pinned",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Desktop profile surface for pinning (置顶) and suspending (挂起) conversation content: an extra tab after Trajectory plus per-assistant-message actions, stored per session in browser localStorage.",
+  "main": "./client-host.js",
+  "exports": {
+    ".": {
+      "default": "./client-host.js"
+    },
+    "./client": {
+      "default": "./client.js"
+    }
+  },
+  "dsh": {
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-primitives",
+        "@deepseek-ai/dsh-client-ui-slots"
+      ],
+      "platform": "web"
+    }
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output and packaging artifacts
+release/
+dist/
+out/
+
+# Icon staging produced by scripts/package-macos.mjs
+build/icon.icns
+build/icon.iconset/
+
+# Logs and runtime state
+*.log
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Leftover siblings from hosts that refuse unlink/rename
+.*.tmpdir/
+*.tmp
+
+# Safety net: never track packaged artifacts that may sit next to the repo
+*.app/
+*.dmg
+*.zip

@@ -1,0 +1,70 @@
+{
+  "name": "heroes-neverdie-desktop",
+  "productName": "HeRoes NEVERDIE",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HeRoes NEVERDIE — an unofficial Electron desktop surface for DeepSeek Harness (DSH): desktop profile + file:// frontend + IPC bridge, aligned with `dsh web`. Not affiliated with or endorsed by DeepSeek.",
+  "type": "module",
+  "main": "main.js",
+  "license": "MIT",
+  "author": "nidafan",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "env -u ELECTRON_RUN_AS_NODE electron .",
+    "rebuild": "bash scripts/rebuild-node-pty.sh",
+    "postinstall": "node -e \"try{require('electron')}catch(e){console.warn('electron binary missing; run: npm run postinstall:electron')}\" && bash scripts/rebuild-node-pty.sh || true",
+    "dist": "electron-builder --mac",
+    "predist": "npm run patch:brand && node scripts/patch-process-fold.mjs",
+    "dist:dir": "electron-builder --mac --dir",
+    "postinstall:electron": "node node_modules/electron/install.js",
+    "selftest": "env -u ELECTRON_RUN_AS_NODE DSH_DESKTOP_SELFTEST=1 DSH_DESKTOP_DISABLE_SANDBOX=1 electron .",
+    "selftest:process-fold": "ELECTRON_RUN_AS_NODE=1 node_modules/electron/dist/Electron.app/Contents/MacOS/Electron scripts/chat-process-fold-selftest.mjs",
+    "package": "node scripts/package-macos.mjs",
+    "prepackage": "npm run patch:brand && node scripts/patch-process-fold.mjs",
+    "patch:process-fold": "node scripts/patch-process-fold.mjs",
+    "check:process-fold": "node scripts/patch-process-fold.mjs --check && node scripts/chat-process-fold-selftest.mjs",
+    "patch:brand": "node scripts/patch-brand.mjs",
+    "check:brand": "node scripts/patch-brand.mjs --check",
+    "verify": "npm run check:brand && npm run check:process-fold"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh": "0.1.5-rc.2",
+    "node-pty": "1.2.0-beta.15"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.1",
+    "electron": "^44.3.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.heroesneverdie.desktop",
+    "productName": "HeRoes NEVERDIE",
+    "asar": true,
+    "asarUnpack": [
+      "**/*.node"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "profile/**/*",
+      "!profile/cordis.yml"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "npmRebuild": false,
+    "electronDownload": {
+      "mirror": "https://npmmirror.com/mirrors/electron/"
+    }
+  }
+}

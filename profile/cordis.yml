@@ -1,0 +1,5 @@
+# dsh desktop profile root — an empty entry list. The tree is composed as patches:
+# each bundle in package.json's dsh.profile.bundles, then cordis.patch.yml, then the
+# home-level layer and flag overlays. The Electron main process rewrites this file on
+# every boot, exactly like the CLI profile boot does. Edit cordis.patch.yml, not this file.
+[]

@@ -1,0 +1,104 @@
+# The dsh-desktop profile user layer, applied after the dsh-web-app bundle
+# layer. It swaps the Web HTTP transport for the Electron shell-owned carrier:
+# - the webserver row, the web startup provider, the web runtime glue, and the
+#   dev HMR row are disabled (Electron loads the dist over file:// and carries
+#   fetch over the IPC bridge, so no HTTP server exists);
+# - two application-owned rows replace them: `desktop-startup` parses the
+#   Electron command line, `desktop-runtime` provides the webRuntime service the
+#   `connection` row injects (so that row stays untouched), the surface-context
+#   prompt section, and the `desktopShell` service the Electron main process
+#   calls to render the index and dispatch fetch/stream traffic.
+#
+# Everything else — the API remotes, the browser roster, the agent presets —
+# is inherited unchanged from the dsh-web-app layer, keeping the desktop
+# surface functionally aligned with `dsh web`.
+
+- id: webserver
+  disabled: true
+
+- id: web-startup
+  disabled: true
+
+- id: web-runtime
+  disabled: true
+
+- id: client-hmr
+  disabled: true
+
+# Open In... rides the Web browser-auth model (loopback cookie + Host/Origin
+# fence) and registers node:http routes on the webserver, so it has no
+# desktop carrier; the surface is off rather than half-broken.
+- id: open-in-app
+  disabled: true
+
+- id: ui-open-in-app
+  disabled: true
+
+# Brand: the official occupant row must be disabled before another brand can take
+# the sidebar slots. It registers WITHOUT an `id`, so the "reuse a shipped id to
+# replace that cell" route is unavailable, and both brand slots are `single`
+# (the renderer takes the first entry) — two occupants would race. Disabling it
+# makes BOTH slots fall back (the mark to the shell's fish, the name to a
+# local-build version label), which is why the profile-owned `brand` plugin below
+# registers both. See plugins/brand/README.md.
+- id: ui-brand-official
+  disabled: true
+
+# The desktop operator always sits at the host display, so the directory
+# picker is pinned to the native OS chooser instead of the auto row (which
+# only exists to sample the webserver bind host). The auto row is disabled
+# (patch rows cannot rename) and the two faces it normally mounts through the
+# loader are composed explicitly: the native host backend and its matching
+# browser-side interaction row.
+- id: directory-picker
+  disabled: true
+
+- insert:
+    - id: directory-picker-native
+      name: '@deepseek-ai/dsh-host-directory-picker-native'
+
+    - id: ui-directory-picker
+      name: '@deepseek-ai/dsh-client-ui-directory-picker-native'
+
+    # Ordinary provider for the parsed Electron flags; mirrors web-startup.
+    # Its plugin-level injection waits for cmdlineArgs, which the Electron
+    # main process provides through dsh-cmdline's provideCmdline.
+    - id: desktop-startup
+      name: ./plugins/desktop-startup.js
+      inject: [cmdlineArgs]
+
+    # The desktop surface: webRuntime (for the connection row's lazy config),
+    # desktopShell (index render + fetch + stream carriers for the shell),
+    # and the desktop-surface prompt section / shell variable.
+    - id: desktop-runtime
+      name: ./plugins/desktop-runtime.js
+
+    # Self-contained usage/balance panel, owned by this profile rather than by
+    # a published package. The path names the host entry file (which the
+    # package manifest also declares as `main`) instead of the bare directory,
+    # because dsh-client-modules resolves the `dsh.client` declaration from the
+    # nearest manifest above the resolved module location: a bare-directory row
+    # still works, but an explicit file keeps the row, the manifest, and the
+    # served client bundle visibly in agreement. The plugin carries no model
+    # surface: a prompt section would send this data to the model on every
+    # request, and the shell-variable row would nest a second environment
+    # registration, neither of which a local readout needs.
+    - id: usage-panel
+      name: ./plugins/usage-panel/client-host.js
+
+    # Pin/hold marks on conversation content: a third conversation-view tab
+    # (id `pinned`, order 20 — right after the trajectory tab's order 10) plus
+    # two actions on every finalized assistant message. State lives in the
+    # browser's localStorage keyed by session; the host half is an empty seat
+    # whose only job is to be the resolvable `main` entry carrying the
+    # `dsh.client` declaration the browser bundle is composed from. No model
+    # surface and no host routes.
+    - id: pinned
+      name: ./plugins/pinned/client-host.js
+
+    # Profile-owned brand: occupies `sidebar.brand.mark` and `sidebar.brand.name`
+    # with the HeRoes mark and wordmark, replacing `ui-brand-official` (disabled
+    # above). Sizing is driven by the measured brand-row budget rather than by the
+    # nominal size prop — see the header of plugins/brand/client.js.
+    - id: brand
+      name: ./plugins/brand/client-host.js

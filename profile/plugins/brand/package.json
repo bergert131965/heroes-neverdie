@@ -1,0 +1,25 @@
+{
+  "name": "dsh-desktop-brand",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Desktop profile brand occupants: HeRoes mark and wordmark replacing the official DeepSeek Harness brand in the sidebar slots.",
+  "main": "./client-host.js",
+  "exports": {
+    ".": {
+      "default": "./client-host.js"
+    },
+    "./client": {
+      "default": "./client.js"
+    }
+  },
+  "dsh": {
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-slots"
+      ],
+      "platform": "web"
+    }
+  },
+  "license": "MIT"
+}

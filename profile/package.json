@@ -1,0 +1,16 @@
+{
+  "name": "dsh-desktop-profile",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Application-owned Desktop profile for the HeRoes NEVERDIE Electron app (built on DeepSeek Harness). The `desktop` name is reserved for Electron ownership, so this directory is loaded through loadProfileDirectory instead of CLI profile lookup.",
+  "dsh": {
+    "profile": {
+      "bundles": [
+        "@deepseek-ai/dsh-base",
+        "@deepseek-ai/dsh-web-app"
+      ],
+      "patchReload": "startup"
+    }
+  }
+}
